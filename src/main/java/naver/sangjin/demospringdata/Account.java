@@ -1,7 +1,8 @@
 package naver.sangjin.demospringdata;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity //Account 테이블에 매핑이 된다고 알려주는
 public class Account {
@@ -15,19 +16,16 @@ public class Account {
 
     private String password;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created = new Date();
+    @OneToMany(mappedBy = "owner") //주인한테 관계를 설정해야 DB에 양방향 관계로 반영됨
+    private Set<Study> studies = new HashSet<>();
 
-    private String yes;
+    public Set<Study> getStudies() {
+        return studies;
+    }
 
-    @Transient //컬럼으로 매핑 하기 싫고 객체에서만 쓸때 붙여준다
-    private String no;
-
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "street", column = @Column(name = "home_street"))
-    })
-    private Address address;
+    public void setStudies(Set<Study> studies) {
+        this.studies = studies;
+    }
 
     // getter, setter는 없어도 컬럼으로 매핑이 된다
 
@@ -55,4 +53,13 @@ public class Account {
         this.password = password;
     }
 
+    public void addStudy(Study study) {
+        this.getStudies().add(study);
+        study.setOwner(this);
+    }
+    
+    public void removeStudy(Study study) {
+        this.getStudies().remove(study);
+        study.setOwner(null);
+    }
 }

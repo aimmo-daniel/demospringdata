@@ -22,9 +22,15 @@ public class JpaRunner implements ApplicationRunner {
         account.setUsername("heejin");
         account.setPassword("hibernate");
 
+        Study study = new Study();
+        study.setName("spring data JPA");
+
+        account.addStudy(study);
+
         Session session = entityManager.unwrap(Session.class);
 
         session.save(account);
+        session.save(study);
     }
 
 }
