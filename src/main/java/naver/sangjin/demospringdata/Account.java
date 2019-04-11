@@ -57,7 +57,7 @@ public class Account {
         this.getStudies().add(study);
         study.setOwner(this);
     }
-    
+
     public void removeStudy(Study study) {
         this.getStudies().remove(study);
         study.setOwner(null);
