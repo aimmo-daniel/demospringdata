@@ -23,6 +23,12 @@ public class Account {
     @Transient //컬럼으로 매핑 하기 싫고 객체에서만 쓸때 붙여준다
     private String no;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "home_street"))
+    })
+    private Address address;
+
     // getter, setter는 없어도 컬럼으로 매핑이 된다
 
     public Long getId() {
