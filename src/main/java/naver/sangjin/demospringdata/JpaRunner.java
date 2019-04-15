@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Component
 @Transactional
@@ -18,27 +20,17 @@ public class JpaRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-/*        Post post = new Post();
-        post.setTitle("Spring Data JPA 언제 잘해지나");
+        // JQPL (데이터베이스 테이블이 아닌, 엔티티 객체 모델 기반으로 쿼리 작성)
+        // JPA 또는 하이버네이트가 해당 쿼리를 SQL로 변환해서 실행함
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post AS p", Post.class);
+        List<Post> posts = query.getResultList();
+        posts.forEach(System.out::println);
 
-        Comment comment = new Comment();
-        comment.setComment("빨리 잘하고 싶어요.");
-        post.addComment(comment);
-
-        Comment comment1 = new Comment();
-        comment1.setComment("곧 잘해질꺼에요.");
-        post.addComment(comment1);*/
-
-        Session session = entityManager.unwrap(Session.class);
-        //session.save(post);
-        Post post = session.get(Post.class, 4l);
-        System.out.println("===================");
-        System.out.println(post.getTitle());
-
-        post.getComments().forEach(c -> {
-            System.out.println("---------------");
-            System.out.println(c.getComment());
-        });
+        // Native Query
+        List posts2 = entityManager.createNativeQuery("SELECT * FROM Post").getResultList();
+        List<Post> post3 = entityManager.createNativeQuery("SELECT * FROM Post", Post.class).getResultList();
+        posts2.forEach(System.out::println);
+        post3.forEach(System.out::println);
     }
 
 }
